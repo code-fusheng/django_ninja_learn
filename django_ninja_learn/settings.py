@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'ninja_extra',
     'django_ninja_learn',
     'api_demo.apps.ApiDemoConfig',
-    'user_app.apps.UserAppConfig'
+    'user_app.apps.UserAppConfig',
+    'debug_app.apps.DebugAppConfig',
 ]
 
 MIDDLEWARE = [
@@ -123,3 +124,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+JWT_SECRET_KEY = "code"

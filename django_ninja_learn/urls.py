@@ -23,7 +23,7 @@ from django.urls import path
 # 导入 NinjaAPI
 from ninja import NinjaAPI, Schema
 from user_app.models import SysUser
-from ninja_extra import NinjaExtraAPI, api_controller, http_get
+from ninja_extra import NinjaExtraAPI, api_controller, http_get, route
 
 api = NinjaExtraAPI()
 
@@ -71,7 +71,6 @@ def create_upload(request, cv: UploadedFile = File(...)):
     filename = STORAGE.save(cv.name, cv)
     print(filename)
     pass
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),

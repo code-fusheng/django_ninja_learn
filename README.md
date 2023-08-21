@@ -11,6 +11,10 @@ pip install django-ninja
 python manage.py startapp api
 python manage.py makemigrations
 python manage.py migrate
+
+pip freeze > requirements.txt
+pip install -r requirements.txt
+
 ```
 
 

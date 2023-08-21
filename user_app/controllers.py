@@ -1,10 +1,11 @@
 from typing import List
 from ninja_extra import NinjaExtraAPI, api_controller, route
-from ninja import Router, ModelSchema
+from ninja import Router, ModelSchema, Schema
 from ninja.pagination import paginate
 from user_app.models import SysUser
 from django_ninja_learn.entity.models import LimitDto
 from django.core.paginator import Paginator
+from django.contrib.auth import authenticate
 
 class SysUserInDto(ModelSchema):
     class Config:
@@ -15,6 +16,11 @@ class SysUserOutDto(ModelSchema):
     class Config:
         model = SysUser
         model_fields = "__all__"
+
+class LoginInDto(Schema):
+    username: str
+    password: str
+
 
 @api_controller("/sys", tags=["user"])
 class SysController:
@@ -28,7 +34,10 @@ class SysController:
     @route.get("/user/info/{id}")
     def info_user(self, id: int):
         sys_user = SysUser.objects.all().filter(id=id).first()
-        sys_user = SysUserOutDto.from_orm(sys_user)
+        if sys_user:
+            sys_user = SysUserOutDto.from_orm(sys_user)
+        else:
+            sys_user = None
         return {"code": 200, "data": sys_user}
 
     @route.post("/user/list")   # response=List[SysUserOutDto]
@@ -48,4 +57,11 @@ class SysController:
     def delete_user(self, id: int):
         SysUser.objects.filter(id=id).delete()
         return {"code": 200, "data": ""}
+
+    @route.post("/user/login")
+    def login(self, payload: LoginInDto):
+        user_obj = authenticate(username=payload.username, password=payload.password)
+        print(user_obj)
+        pass
+
 
