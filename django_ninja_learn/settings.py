@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ninja_extra',
+    'django_ninja_learn',
     'api_demo.apps.ApiDemoConfig',
     'user_app.apps.UserAppConfig'
 ]
