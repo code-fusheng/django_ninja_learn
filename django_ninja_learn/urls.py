@@ -18,14 +18,16 @@ Including another URLconf
 
 """
 
-from django.contrib import admin
+from django.contrib import admin, auth
 from django.urls import path
 # 导入 NinjaAPI
 from ninja import NinjaAPI, Schema
 from user_app.models import SysUser
 from ninja_extra import NinjaExtraAPI, api_controller, http_get, route
+from ninja_jwt.controller import NinjaJWTDefaultController
 
 api = NinjaExtraAPI()
+api.register_controllers(NinjaJWTDefaultController)
 
 api.auto_discover_controllers()
 
@@ -72,8 +74,25 @@ def create_upload(request, cv: UploadedFile = File(...)):
     print(filename)
     pass
 
+
+class LoginIn(Schema):
+    username: str
+    password: str
+
+
+@api.post("/login")
+def login(request, payload: LoginIn):
+    """用户登录"""
+    user = auth.authenticate(username=payload.username, password=payload.password)
+    if user is not None:
+        return {"code": 200, "msg": user.id}
+    else:
+        return {"code": -1, "msg": "xxx"}
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     # 配置公共基础路由
     path('api/', api.urls),
+    # 框架路由
 ]
