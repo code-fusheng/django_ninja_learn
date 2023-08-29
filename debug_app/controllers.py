@@ -2,9 +2,11 @@ import jwt
 from ninja_extra import NinjaExtraAPI, api_controller, route
 from django_ninja_learn.utils.jwt_utils import generate_token, verify_token
 from ninja_jwt.controller import TokenObtainPairController
+from ninja_jwt.authentication import JWTAuth
+
 
 @api_controller("/debug", tags=["debug"])
-class DebugController(TokenObtainPairController):
+class DebugController:
 
     @route.get('/generate_token')
     def debug_token(self, id: int):
@@ -22,3 +24,8 @@ class DebugController(TokenObtainPairController):
             return None
         except jwt.InvalidTokenError:
             return None
+
+    @route.get("/info")
+    def debug_info(self, request):
+        print(request.user)
+        return {"code": 200, "data": request.user.id}

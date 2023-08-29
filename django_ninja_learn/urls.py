@@ -25,62 +25,20 @@ from ninja import NinjaAPI, Schema
 from user_app.models import SysUser
 from ninja_extra import NinjaExtraAPI, api_controller, http_get, route
 from ninja_jwt.controller import NinjaJWTDefaultController
+from django.contrib.auth import authenticate
 
 api = NinjaExtraAPI()
-api.register_controllers(NinjaJWTDefaultController)
 
 api.auto_discover_controllers()
 
-# API DOCS http://127.0.0.1:8000/api/docs
-
-# http://127.0.0.1:8000/api/test?a=1&b=2
-@api.get("/test")
-def test(request, a: int, b: int):
-    return {"result": a + b}
-
-# http://127.0.0.1:8000/api/hello?name=code-fusheng
-@api.get("/hello")
-def hello(request, name):
-    return f"Hello Django & Ninja & {name}"
-
-@api.get("/math/{a}and{b}")
-def math(request, a: int, b: int):
-    return {"result": a + b}
-
-class HelloSchema(Schema):
-    name: str = "world"
-
-@api.post("/test/post")
-def test_post(request, body: HelloSchema):
-    return f"Hello {body.name}"
-
-from user_app.schemas import EmployeeCreate
-from user_app.models import Employee
-
-@api.post("/employee/create")
-def create_employee(request, payload: EmployeeCreate):
-    new_employee = Employee.objects.create(**payload.dict())
-    return {"id": new_employee.id}
-
-# 处理文件上传
-from ninja import UploadedFile, File
-from django.core.files.storage import FileSystemStorage
-
-STORAGE = FileSystemStorage()
-
-@api.post("/upload")
-def create_upload(request, cv: UploadedFile = File(...)):
-    filename = STORAGE.save(cv.name, cv)
-    print(filename)
-    pass
-
+api.register_controllers(NinjaJWTDefaultController)
 
 class LoginIn(Schema):
     username: str
     password: str
 
 
-@api.post("/login")
+@api.post("/login", auth=None)
 def login(request, payload: LoginIn):
     """用户登录"""
     user = auth.authenticate(username=payload.username, password=payload.password)
